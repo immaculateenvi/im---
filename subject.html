@@ -1,0 +1,88 @@
+<!-- ========== SUBJECT.HTML ========== -->
+<!-- Individual subject test page - fully offline capable -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <title id="subjectName">Immaculate Envilinks · Subject</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="subject-page">
+    <div class="main-wrapper">
+        <!-- ===== BACK TO DASHBOARD ===== -->
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> all courses</a>
+
+        <!-- ===== HEADER (compact) ===== -->
+        <header class="cbt-header" style="margin-bottom:20px;">
+            <div class="logo-area">
+                <img src="logo.jpg" alt="Envilinks Logo" class="logo-image" style="width:70px; height:70px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div>
+                    <div class="cbt-title" style="font-size:1.8rem;">IM+++ <span style="font-size:1.2rem;" id="subjectNameHeader"></span></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== OFFLINE INDICATOR ===== -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <span style="background: #e6d5b8; padding: 4px 16px; border-radius: 60px; font-size: 0.8rem; color: #4a3e2e;">
+                <i class="fas fa-database"></i> cached offline
+            </span>
+        </div>
+
+        <!-- ===== MODE TOGGLE ===== -->
+        <div class="mode-toggle" id="modeToggle">
+            <button id="modeCbtBtn" class="mode-btn active"><i class="fas fa-clock"></i> CBT · 20q</button>
+            <button id="modePracticeBtn" class="mode-btn"><i class="fas fa-feather"></i> Practice · all</button>
+        </div>
+
+        <!-- ===== QUIZ PANEL ===== -->
+        <div class="quiz-pane" id="quizPane">
+            <div class="question-header">
+                <div class="progress" id="progressIndicator">✦ 0/0</div>
+                <div class="timer-badge" id="timerDisplay"><i class="fas fa-hourglass-half"></i> 00:00</div>
+                <button class="shuffle-btn" id="shuffleBtn"><i class="fas fa-random"></i> reshuffle</button>
+            </div>
+            <div id="questionContainer">
+                <div class="question-box" id="questionText">loading questions...</div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" disabled><i class="fas fa-arrow-left"></i> previous</button>
+                <button class="nav-btn" id="nextBtn">next <i class="fas fa-arrow-right"></i></button>
+                <button class="nav-btn submit-btn" id="submitSubjectBtn"><i class="fas fa-check-circle"></i> finish & submit</button>
+                <button class="nav-btn explain-btn" id="explainCurrentBtn"><i class="fas fa-lightbulb"></i> explain</button>
+            </div>
+        </div>
+
+        <!-- ===== CORRECTION PANE ===== -->
+        <div class="correction-pane" id="correctionPane">
+            <div class="correction-title">
+                <i class="fas fa-clipboard-check"></i> reflection · topics
+            </div>
+            <div id="correctionContent">
+                <p style="font-size:1.2rem; color:#685a4a;">✨ select an answer. practice mode gives instant explanations.</p>
+            </div>
+            <div class="topic-suggestion" id="topicSuggestionBox">
+                <i class="fas fa-book-open"></i> <strong>📘 read more about:</strong> <span id="suggestedTopics">—</span>
+            </div>
+        </div>
+
+        <!-- ===== COPYRIGHT ===== -->
+        <footer class="copyright">
+            <div class="footer-credit">
+                <span><i class="fas fa-copyright"></i> Designed by <a href="https://eimc.vercel.app/"> Envilinks Interconnectivity Media Concept</a></span>
+                
+                <span><i class="fas fa-bolt"></i><a href="https://chat.whatsapp.com/KnEMW7zYJr1K8Be0naLIYa" target="_blank" class="community-link">
+                <i class="fab fa-whatsapp"></i> Join the Immaculate Envilinks + FUTA community
+            </a></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- subject JavaScript -->
+    <script src="subject.js"></script>
+</body>
+</html>

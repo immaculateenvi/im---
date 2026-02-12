@@ -1,0 +1,84 @@
+<!-- ========== INDEX.HTML ========== -->
+<!-- Main page: course selection dashboard with service worker registration -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <title>Immaculate Envilinks · CBT Courses</title>
+    <!-- Font Awesome loaded locally via offline cache (service worker will cache it) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- main stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Web app manifest for installability -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fefdf8">
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- ===== HEADER with logo.jpg ===== -->
+        <header class="cbt-header">
+            <div class="logo-area">
+                <img src="logo.jpg" alt="Envilinks Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div>
+                    <div class="cbt-title">IM +++</div>
+                    <div class="full-name"><i class="fas fa-leaf"></i> Immaculate Envilinks Practice CBT</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== OFFLINE READY BADGE ===== -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <span style="background: #e6d5b8; padding: 6px 20px; border-radius: 60px; font-size: 0.9rem; color: #4a3e2e;">
+                <i class="fas fa-database"></i> Saved to device · works offline
+            </span>
+        </div>
+
+        <!-- ===== WELCOME / INSTRUCTION ===== -->
+        <div class="welcome-panel">
+            <h2>📘 Select a course to begin</h2>
+            <p>CBT mode: 20 random questions · timer · full report <br> Practice mode: all 50+ questions · instant explanation</p>
+            <p style="margin-top: 12px; font-size: 0.95rem; color: #6c604c;"><i class="fas fa-check-circle"></i> App cached offline – you only need internet once</p>
+        </div>
+
+        <!-- ===== SUBJECT CARDS ===== -->
+        <div class="subject-dashboard" id="subjectDashboard"></div>
+
+        <!-- ===== COPYRIGHT ===== -->
+        <footer class="copyright">
+            <div class="footer-credit">
+                <span><i class="fas fa-copyright"></i> Designed by <a href="https://eimc.vercel.app/"> Envilinks Interconnectivity Media Concept</a></span>
+                
+                <span><i class="fas fa-bolt"></i><a href="https://chat.whatsapp.com/KnEMW7zYJr1K8Be0naLIYa" target="_blank" class="community-link">
+                <i class="fab fa-whatsapp"></i> Join the Immaculate Envilinks + FUTA community
+            </a></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ===== SUBJECT DATA (embedded as JSON) ===== -->
+    <script id="subjectData" type="application/json">
+        [
+            { "id": "cve", "name": "CVE 105", "icon": "flask", "timeMin": 10, "bankSize": 55 },
+            { "id": "che", "name": "CHE 101", "icon": "vial", "timeMin": 10, "bankSize": 55 },
+            { "id": "gns101", "name": "GNS 101", "icon": "book", "timeMin": 10, "bankSize": 50 },
+            { "id": "gns103", "name": "GNS 103", "icon": "building-columns", "timeMin": 10, "bankSize": 52 },
+            { "id": "phy101", "name": "PHY 101", "icon": "rocket", "timeMin": 10, "bankSize": 55 },
+            { "id": "phy103", "name": "PHY 103", "icon": "droplet", "timeMin": 10, "bankSize": 52 },
+            { "id": "mts", "name": "MTS 101", "icon": "square-root-variable", "timeMin": 20, "bankSize": 55 }
+        ]
+    </script>
+    <!-- main index JavaScript -->
+    <script src="index.js"></script>
+    <!-- service worker registration - enables offline caching -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('✅ Service Worker registered for offline use', reg.scope))
+                    .catch(err => console.log('❌ Service Worker registration failed', err));
+            });
+        }
+    </script>
+</body>
+</html>
