@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <!-- MathJax for beautiful equations -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 <body class="subject-page">
     <div class="main-wrapper">
@@ -57,24 +59,34 @@
             </div>
         </div>
 
-        <!-- ===== CORRECTION PANE ===== -->
+        <!-- ===== CORRECTION PANE (minimal until submission) ===== -->
         <div class="correction-pane" id="correctionPane">
             <div class="correction-title">
-                <i class="fas fa-clipboard-check"></i> reflection · topics
+                <i class="fas fa-clipboard-check"></i> review & topics
             </div>
             <div id="correctionContent">
-                <p style="font-size:1.2rem; color:#685a4a;">✨ select an answer. practice mode gives instant explanations.</p>
+                <p style="font-size:1.2rem; color:#685a4a; text-align:center;">
+                    <i class="fas fa-lock"></i> Complete the test and submit to see your results
+                </p>
             </div>
-            <div class="topic-suggestion" id="topicSuggestionBox">
-                <i class="fas fa-book-open"></i> <strong>📘 read more about:</strong> <span id="suggestedTopics">—</span>
+            <!-- Hidden until submission -->
+            <div class="topic-suggestion hidden" id="topicSuggestionBox">
+                <i class="fas fa-book-open"></i> <strong>📘 focus topics for review:</strong> 
+                <span id="suggestedTopics">—</span>
             </div>
+        </div>
+
+        <!-- ===== VIEW FULL RESULTS LINK (hidden until submission) ===== -->
+        <div style="text-align: center; margin: 20px 0;" id="viewResultsContainer" class="hidden">
+            <a href="#" id="viewFullResultsBtn" class="community-link" style="display: inline-flex; background: #c1d4c9; padding: 16px 42px;">
+                <i class="fas fa-chart-simple"></i> view detailed performance report
+            </a>
         </div>
 
         <!-- ===== COPYRIGHT ===== -->
         <footer class="copyright">
             <div class="footer-credit">
                 <span><i class="fas fa-copyright"></i> Designed by <a href="https://eimc.vercel.app/"> Envilinks Interconnectivity Media Concept</a></span>
-                
                 <span><i class="fas fa-bolt"></i><a href="https://chat.whatsapp.com/KnEMW7zYJr1K8Be0naLIYa" target="_blank" class="community-link">
                 <i class="fab fa-whatsapp"></i> Join the Immaculate Envilinks + FUTA community
             </a></span>
