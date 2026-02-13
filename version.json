@@ -1,0 +1,13 @@
+{
+  "version": "3.0.0",
+  "releaseDate": "2024-01-20",
+  "changes": [
+    "Added 120+ questions for all 7 courses",
+    "Added Custom Session mode with adjustable time and questions",
+    "Added fill-in-the-blanks for CVE 105 and GNS 101",
+    "Fixed CHE 101 missing questions (now 80 questions)",
+    "Improved offline sync and update mechanism"
+  ],
+  "forceUpdate": false,
+  "minVersion": "2.0.0"
+}

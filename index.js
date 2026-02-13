@@ -37,3 +37,43 @@
 
     renderCards();
 })();
+
+(function() {
+    "use strict";
+
+    const subjectDataElement = document.getElementById('subjectData');
+    if (!subjectDataElement) return;
+    
+    let subjects = [];
+    try {
+        subjects = JSON.parse(subjectDataElement.textContent);
+        // Update bank sizes to 125 for all
+        subjects = subjects.map(sub => ({
+            ...sub,
+            bankSize: 125
+        }));
+    } catch (e) {
+        console.error('Failed to parse subject data', e);
+        return;
+    }
+
+    const dashboardEl = document.getElementById('subjectDashboard');
+
+    function renderCards() {
+        if (!dashboardEl) return;
+        let html = '';
+        subjects.forEach(sub => {
+            html += `<a href="subject.html?id=${sub.id}" class="subject-card" data-sub-id="${sub.id}">
+                <div class="subject-icon"><i class="fas fa-${sub.icon}"></i></div>
+                <div class="subject-name">${sub.name}</div>
+                <div class="meta-info">
+                    <span>${sub.bankSize}+ Q</span> 
+                    <span><i class="far fa-clock"></i> ${sub.timeMin}min</span>
+                </div>
+            </a>`;
+        });
+        dashboardEl.innerHTML = html;
+    }
+
+    renderCards();
+})();

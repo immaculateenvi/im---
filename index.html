@@ -1,22 +1,20 @@
-<!-- ========== INDEX.HTML ========== -->
-<!-- Main page: course selection dashboard with service worker registration -->
+<!-- ========== INDEX.HTML - COMPLETE VERSION ========== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
     <title>Immaculate Envilinks · CBT Courses</title>
-    <!-- Font Awesome loaded locally via offline cache (service worker will cache it) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- main stylesheet -->
     <link rel="stylesheet" href="style.css">
-    <!-- Web app manifest for installability -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#fefdf8">
+    <meta name="app-version" content="3.0.0">
+    <script src="version.js"></script>
 </head>
 <body>
     <div class="main-wrapper">
-        <!-- ===== HEADER with logo.jpg ===== -->
+        <!-- ===== HEADER ===== -->
         <header class="cbt-header">
             <div class="logo-area">
                 <img src="logo.jpg" alt="Envilinks Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -25,124 +23,147 @@
                     <div class="full-name"><i class="fas fa-leaf"></i> Immaculate Envilinks Practice CBT</div>
                 </div>
             </div>
+            <div style="display: flex; gap: 10px;">
+                <span class="version-badge" style="background: #e6d5b8; padding: 8px 16px; border-radius: 40px; font-size: 0.9rem;">
+                    <i class="fas fa-code-branch"></i> v3.0.0
+                </span>
+                <button id="checkUpdateBtn" class="update-btn" style="background: #d9dad2; border: none; padding: 8px 20px; border-radius: 40px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Check Updates</span>
+                </button>
+            </div>
         </header>
 
-        <!-- ===== WELCOME / INSTRUCTION ===== -->
+        <!-- ===== STATUS BAR ===== -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 20px;">
+            <span class="offline-status" style="background: #d4e6cb; padding: 8px 20px; border-radius: 60px; font-size: 0.95rem;">
+                <i class="fas fa-wifi"></i> Online
+            </span>
+            <span style="background: #e6d5b8; padding: 8px 20px; border-radius: 60px; font-size: 0.95rem;">
+                <i class="fas fa-database"></i> <span id="cacheStatus">Cached offline</span>
+            </span>
+        </div>
+
+        <!-- ===== WELCOME PANEL ===== -->
         <div class="welcome-panel">
             <h2>📘 Select a course to begin</h2>
-            <p>CBT mode: 20 random questions · timer · full report <br> Practice mode: all 80-100+ questions · instant explanation <br> Custom Sesssion : Select your prefered time and questions</p>
-            <p style="margin-top: 12px; font-size: 0.95rem; color: #6c604c;"><i class="fas fa-check-circle"></i> App cached offline – you only need internet once</p>
+            <p>CBT mode: 20 random questions · timer · full report <br> Practice mode: all 120+ questions · instant explanation <br> Custom Session: Select your preferred time and questions</p>
+            <p style="margin-top: 12px; font-size: 0.95rem; color: #6c604c;">
+                <i class="fas fa-check-circle"></i> App cached offline – you only need internet once
+                <span id="lastUpdated" style="margin-left: 15px; font-size: 0.85rem;"></span>
+            </p>
         </div>
 
         <!-- ===== SUBJECT CARDS ===== -->
         <div class="subject-dashboard" id="subjectDashboard"></div>
 
+        <!-- ===== UPDATE HISTORY LINK ===== -->
+        <div style="text-align: center; margin: 20px 0;" id="updateHistoryContainer" style="display: none;">
+            <a href="#" onclick="showUpdateHistory()" style="color: #6f5e4e; text-decoration: underline dotted;">
+                <i class="fas fa-history"></i> View update history
+            </a>
+        </div>
+
         <!-- ===== COPYRIGHT ===== -->
         <footer class="copyright">
             <div class="footer-credit">
-                <span><i class="fas fa-copyright"></i> Designed by <a href="https://eimc.vercel.app/"> Envilinks Interconnectivity Media Concept</a></span>
-                <span><a href="https://imsummary.vercel.app/"> Visit our Course Summary Site</a></span>
-                <span><i class="fas fa-bolt"></i><a href="https://chat.whatsapp.com/KnEMW7zYJr1K8Be0naLIYa" target="_blank" class="community-link">
-                <i class="fab fa-whatsapp"></i> Join the Immaculate Envilinks + FUTA community
-            </a></span>
+                <span><i class="fas fa-copyright"></i> Designed by <a href="https://eimc.vercel.app/">Envilinks Interconnectivity Media Concept</a></span>
+                <span><a href="https://imsummary.vercel.app/">Visit our Course Summary Site</a></span>
+                <span><i class="fas fa-bolt"></i> v<span id="footerVersion">3.0.0</span></span>
+                <span><a href="https://chat.whatsapp.com/KnEMW7zYJr1K8Be0naLIYa" target="_blank" class="community-link">
+                    <i class="fab fa-whatsapp"></i> Join Community
+                </a></span>
             </div>
         </footer>
     </div>
 
-    <!-- ===== SUBJECT DATA (embedded as JSON) ===== -->
+    <!-- ===== SUBJECT DATA ===== -->
     <script id="subjectData" type="application/json">
         [
             { "id": "cve", "name": "CVE 105", "icon": "flask", "timeMin": 10, "bankSize": 120 },
             { "id": "che", "name": "CHE 101", "icon": "vial", "timeMin": 10, "bankSize": 80 },
             { "id": "gns101", "name": "GNS 101", "icon": "book", "timeMin": 10, "bankSize": 120 },
-            { "id": "gns103", "name": "GNS 103", "icon": "building-columns", "timeMin": 10, "bankSize": 100 },
+            { "id": "gns103", "name": "GNS 103", "icon": "building-columns", "timeMin": 10, "bankSize": 80 },
             { "id": "phy101", "name": "PHY 101", "icon": "rocket", "timeMin": 10, "bankSize": 80 },
             { "id": "phy103", "name": "PHY 103", "icon": "droplet", "timeMin": 10, "bankSize": 80 },
-            { "id": "mts", "name": "MTS 101", "icon": "square-root-variable", "timeMin": 20, "bankSize": 80 }
+            { "id": "mts", "name": "MTS 101", "icon": "square-root-variable", "timeMin": 20, "bankSize": 125 }
         ]
     </script>
-    <!-- main index JavaScript -->
+
     <script src="index.js"></script>
-    <!-- service worker registration - enables offline caching -->
-<!-- Add this improved service worker registration in index.html -->
-<script>
-    'use strict';
-    
-    // Improved service worker registration with offline detection
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-            // Register service worker
+    <script>
+        // Update footer version
+        document.getElementById('footerVersion').textContent = 
+            document.querySelector('meta[name="app-version"]')?.content || '3.0.0';
+        
+        // Last updated display
+        const lastUpdate = localStorage.getItem('last_update_check');
+        if (lastUpdate) {
+            const date = new Date(parseInt(lastUpdate));
+            document.getElementById('lastUpdated').textContent = 
+                `Last checked: ${date.toLocaleDateString()}`;
+        }
+
+        // Check update button
+        document.getElementById('checkUpdateBtn').addEventListener('click', function() {
+            const btn = this;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            btn.disabled = true;
+            
+            checkForUpdates(true).then(() => {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }).catch(() => {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            });
+        });
+
+        // Network status
+        function updateOnlineStatus() {
+            const statusEl = document.querySelector('.offline-status');
+            if (navigator.onLine) {
+                statusEl.innerHTML = '<i class="fas fa-wifi"></i> Online';
+                statusEl.style.background = '#d4e6cb';
+            } else {
+                statusEl.innerHTML = '<i class="fas fa-plug"></i> Offline';
+                statusEl.style.background = '#ffe1dd';
+            }
+        }
+        
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+
+        // Cache status
+        if ('caches' in window) {
+            caches.keys().then(keys => {
+                const cacheStatus = document.getElementById('cacheStatus');
+                if (keys.length > 0) {
+                    cacheStatus.innerHTML = `<i class="fas fa-check-circle"></i> ${keys.length} caches · ready offline`;
+                }
+            });
+        }
+
+        // Service worker registration with update handling
+        if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
-                .then(function(reg) {
-                    console.log('✅ Service Worker registered!', reg.scope);
+                .then(reg => {
+                    console.log('Service Worker registered:', reg);
                     
-                    // Check for updates
-                    reg.addEventListener('updatefound', function() {
+                    reg.addEventListener('updatefound', () => {
                         const newWorker = reg.installing;
-                        console.log('🔄 New service worker found!');
-                        
-                        newWorker.addEventListener('statechange', function() {
+                        newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('🆕 New version available!');
-                                // Notify user of update
-                                if (confirm('New version available! Reload to update?')) {
-                                    window.location.reload();
-                                }
+                                // New version available
+                                console.log('New version detected');
                             }
                         });
                     });
                 })
-                .catch(function(error) {
-                    console.error('❌ Service Worker registration failed:', error);
-                });
-            
-            // Check if we're online/offline
-            function updateOnlineStatus() {
-                const statusElement = document.querySelector('.offline-status');
-                if (statusElement) {
-                    if (navigator.onLine) {
-                        statusElement.innerHTML = '<i class="fas fa-wifi"></i> Online';
-                        statusElement.style.background = '#d4e6cb';
-                    } else {
-                        statusElement.innerHTML = '<i class="fas fa-plug"></i> Offline';
-                        statusElement.style.background = '#ffe1dd';
-                    }
-                }
-            }
-            
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-            updateOnlineStatus();
-        });
-        
-        // Clear old caches on first load (cleanup)
-        window.addEventListener('load', function() {
-            if ('caches' in window) {
-                caches.keys().then(function(cacheNames) {
-                    return Promise.all(
-                        cacheNames.map(function(cacheName) {
-                            if (cacheName.startsWith('envilinks-cbt-') && cacheName !== 'envilinks-cbt-v1') {
-                                console.log('🧹 Cleaning up old cache:', cacheName);
-                                return caches.delete(cacheName);
-                            }
-                        })
-                    );
-                });
-            }
-        });
-    } else {
-        console.warn('❌ Service Workers not supported in this browser');
-    }
-</script>
-
-<!-- Add offline status indicator in header -->
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-    <span style="background: #e6d5b8; padding: 6px 20px; border-radius: 60px; font-size: 0.9rem; color: #4a3e2e;">
-        <i class="fas fa-database"></i> Saved to device · works offline
-    </span>
-    <span class="offline-status" style="background: #d4e6cb; padding: 6px 20px; border-radius: 60px; font-size: 0.9rem; color: #2e5e4e;">
-        <i class="fas fa-wifi"></i> Online
-    </span>
-</div>
+                .catch(err => console.error('Service Worker registration failed:', err));
+        }
+    </script>
 </body>
 </html>

@@ -1,197 +1,126 @@
-// ========== sw.js ==========
-// Complete service worker for Immaculate Envilinks CBT
-// Enables full offline functionality with cache-first strategy
-
-const CACHE_NAME = 'envilinks-cbt-v1';
-const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './subject.html',
-    './results.html',
-    './style.css',
-    './index.js',
-    './subject.js',
-    './results.js',
-    './logo.jpg',
-    './manifest.json',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/fa-solid-900.woff2',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/fa-regular-400.woff2',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/fa-brands-400.woff2',
-    'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js',
-    'https://cdn.jsdelivr.net/npm/mathjax@3/es5/input/tex.js',
-    'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml.js',
-    'https://cdn.jsdelivr.net/npm/mathjax@3/es5/ui/lazy.js'
+// ========== ENHANCED SERVICE WORKER WITH VERSION CONTROL ==========
+const CACHE_NAME = 'envilinks-cache-v3'; // INCREMENT WHEN UPDATING
+const urlsToCache = [
+  './',
+  './index.html',
+  './subject.html',
+  './results.html',
+  './style.css',
+  './subject.js',
+  './results.js',
+  './index.js',
+  './version.js',
+  './manifest.json',
+  './logo.jpg',
+  './offline.html',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
+  'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js'
 ];
 
 // Install event - cache all static assets
 self.addEventListener('install', event => {
-    console.log('✅ Service Worker installing...');
-    
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('📦 Caching app assets...');
-                return cache.addAll(ASSETS_TO_CACHE);
-            })
-            .then(() => {
-                console.log('✅ All assets cached successfully');
-                return self.skipWaiting();
-            })
-            .catch(error => {
-                console.error('❌ Cache installation failed:', error);
-            })
-    );
+  console.log('[Service Worker] Installing new version:', CACHE_NAME);
+  self.skipWaiting(); // Force activate immediately
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('[Service Worker] Caching all assets');
+        return cache.addAll(urlsToCache).catch(error => {
+          console.error('[Service Worker] Cache addAll failed:', error);
+          // Still resolve so installation completes
+          return Promise.resolve();
+        });
+      })
+  );
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
-    console.log('🚀 Service Worker activating...');
-    
-    event.waitUntil(
-        caches.keys()
-            .then(cacheNames => {
-                return Promise.all(
-                    cacheNames.map(cacheName => {
-                        if (cacheName !== CACHE_NAME) {
-                            console.log('🗑️ Removing old cache:', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
-            .then(() => {
-                console.log('✅ Service Worker activated');
-                return self.clients.claim();
-            })
-    );
+  console.log('[Service Worker] Activating new version');
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('[Service Worker] Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => {
+      console.log('[Service Worker] Claiming clients for new version');
+      return self.clients.claim(); // Take control of all pages immediately
+    })
+  );
 });
 
-// Fetch event - cache-first strategy for offline first
+// Fetch event - network first, then cache, with offline fallback
 self.addEventListener('fetch', event => {
-    // Skip cross-origin requests except allowed CDNs
-    const url = new URL(event.request.url);
-    
-    // Allow our CDN resources
-    const allowedOrigins = [
-        'cdnjs.cloudflare.com',
-        'cdn.jsdelivr.net'
-    ];
-    
-    // Skip non-GET requests
-    if (event.request.method !== 'GET') return;
-    
-    // Handle different request types
-    if (url.origin === self.location.origin) {
-        // Same origin - use cache-first strategy
-        event.respondWith(
-            caches.match(event.request)
-                .then(cachedResponse => {
-                    if (cachedResponse) {
-                        // Return cached version
-                        return cachedResponse;
-                    }
-                    
-                    // Not in cache - fetch and cache
-                    return fetch(event.request)
-                        .then(networkResponse => {
-                            // Cache valid responses
-                            if (networkResponse && networkResponse.status === 200) {
-                                const responseToCache = networkResponse.clone();
-                                caches.open(CACHE_NAME)
-                                    .then(cache => {
-                                        cache.put(event.request, responseToCache);
-                                    });
-                            }
-                            return networkResponse;
-                        })
-                        .catch(error => {
-                            console.error('❌ Fetch failed:', error);
-                            
-                            // Return offline fallback for HTML requests
-                            if (event.request.headers.get('accept').includes('text/html')) {
-                                return caches.match('./index.html');
-                            }
-                        });
-                })
-        );
-    } else if (allowedOrigins.some(origin => url.hostname.includes(origin))) {
-        // CDN resources - cache-first
-        event.respondWith(
-            caches.match(event.request)
-                .then(cachedResponse => {
-                    if (cachedResponse) {
-                        return cachedResponse;
-                    }
-                    
-                    return fetch(event.request)
-                        .then(networkResponse => {
-                            const responseToCache = networkResponse.clone();
-                            caches.open(CACHE_NAME)
-                                .then(cache => {
-                                    cache.put(event.request, responseToCache);
-                                });
-                            return networkResponse;
-                        })
-                        .catch(() => {
-                            // Return a fallback for font requests if needed
-                            if (event.request.url.includes('font-awesome')) {
-                                // Return minimal CSS that won't break layout
-                                return new Response('', {
-                                    status: 200,
-                                    headers: { 'Content-Type': 'text/css' }
-                                });
-                            }
-                        });
-                })
-        );
-    }
-    // Let other requests go through normally
-});
+  // Skip cross-origin requests like CDN
+  if (!event.request.url.startsWith(self.location.origin) && 
+      !event.request.url.includes('cdnjs') && 
+      !event.request.url.includes('mathjax')) {
+    return;
+  }
 
-// Handle offline sync for future features
-self.addEventListener('sync', event => {
-    if (event.tag === 'sync-results') {
-        // For future implementation - sync saved results when online
-        console.log('🔄 Syncing results...');
-    }
-});
-
-// Handle push notifications (for future use)
-self.addEventListener('push', event => {
-    const options = {
-        body: event.data.text(),
-        icon: './logo.jpg',
-        badge: './logo.jpg',
-        vibrate: [100, 50, 100],
-        data: {
-            dateOfArrival: Date.now(),
-            primaryKey: 1
-        },
-        actions: [
-            {
-                action: 'open',
-                title: 'Open App'
-            }
-        ]
-    };
-    
-    event.waitUntil(
-        self.registration.showNotification('Immaculate Envilinks CBT', options)
+  // For HTML navigation requests - network first, then cache
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Cache the latest version
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+          return response;
+        })
+        .catch(() => {
+          return caches.match(event.request).then(cached => {
+            if (cached) return cached;
+            return caches.match('./offline.html');
+          });
+        })
     );
-});
+    return;
+  }
 
-// Handle notification clicks
-self.addEventListener('notificationclick', event => {
-    event.notification.close();
-    
-    event.waitUntil(
-        clients.matchAll({ type: 'window' })
-            .then(clientList => {
-                if (clientList.length > 0) {
-                    return clientList[0].focus();
-                }
-                return clients.openWindow('./index.html');
+  // For other assets - cache first, then network (faster offline)
+  event.respondWith(
+    caches.match(event.request)
+      .then(cachedResponse => {
+        if (cachedResponse) {
+          // Update cache in background for next time
+          fetch(event.request)
+            .then(networkResponse => {
+              if (networkResponse && networkResponse.status === 200) {
+                caches.open(CACHE_NAME).then(cache => {
+                  cache.put(event.request, networkResponse);
+                });
+              }
             })
-    );
+            .catch(() => {});
+          return cachedResponse;
+        }
+
+        // Not in cache - get from network
+        return fetch(event.request)
+          .then(networkResponse => {
+            if (!networkResponse || networkResponse.status !== 200) {
+              return networkResponse;
+            }
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+            return networkResponse;
+          })
+          .catch(() => {
+            if (event.request.url.includes('.css') || event.request.url.includes('.js')) {
+              return new Response('', { status: 200, statusText: 'OK' });
+            }
+            return new Response('Offline', { status: 503 });
+          });
+      })
+  );
 });
