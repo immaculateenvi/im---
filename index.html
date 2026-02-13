@@ -71,14 +71,85 @@
     <!-- main index JavaScript -->
     <script src="index.js"></script>
     <!-- service worker registration - enables offline caching -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('✅ Service Worker registered for offline use', reg.scope))
-                    .catch(err => console.log('❌ Service Worker registration failed', err));
-            });
-        }
-    </script>
+<!-- Add this improved service worker registration in index.html -->
+<script>
+    'use strict';
+    
+    // Improved service worker registration with offline detection
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            // Register service worker
+            navigator.serviceWorker.register('sw.js')
+                .then(function(reg) {
+                    console.log('✅ Service Worker registered!', reg.scope);
+                    
+                    // Check for updates
+                    reg.addEventListener('updatefound', function() {
+                        const newWorker = reg.installing;
+                        console.log('🔄 New service worker found!');
+                        
+                        newWorker.addEventListener('statechange', function() {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('🆕 New version available!');
+                                // Notify user of update
+                                if (confirm('New version available! Reload to update?')) {
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(function(error) {
+                    console.error('❌ Service Worker registration failed:', error);
+                });
+            
+            // Check if we're online/offline
+            function updateOnlineStatus() {
+                const statusElement = document.querySelector('.offline-status');
+                if (statusElement) {
+                    if (navigator.onLine) {
+                        statusElement.innerHTML = '<i class="fas fa-wifi"></i> Online';
+                        statusElement.style.background = '#d4e6cb';
+                    } else {
+                        statusElement.innerHTML = '<i class="fas fa-plug"></i> Offline';
+                        statusElement.style.background = '#ffe1dd';
+                    }
+                }
+            }
+            
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            updateOnlineStatus();
+        });
+        
+        // Clear old caches on first load (cleanup)
+        window.addEventListener('load', function() {
+            if ('caches' in window) {
+                caches.keys().then(function(cacheNames) {
+                    return Promise.all(
+                        cacheNames.map(function(cacheName) {
+                            if (cacheName.startsWith('envilinks-cbt-') && cacheName !== 'envilinks-cbt-v1') {
+                                console.log('🧹 Cleaning up old cache:', cacheName);
+                                return caches.delete(cacheName);
+                            }
+                        })
+                    );
+                });
+            }
+        });
+    } else {
+        console.warn('❌ Service Workers not supported in this browser');
+    }
+</script>
+
+<!-- Add offline status indicator in header -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <span style="background: #e6d5b8; padding: 6px 20px; border-radius: 60px; font-size: 0.9rem; color: #4a3e2e;">
+        <i class="fas fa-database"></i> Saved to device · works offline
+    </span>
+    <span class="offline-status" style="background: #d4e6cb; padding: 6px 20px; border-radius: 60px; font-size: 0.9rem; color: #2e5e4e;">
+        <i class="fas fa-wifi"></i> Online
+    </span>
+</div>
 </body>
 </html>
