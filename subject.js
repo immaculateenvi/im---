@@ -6079,7 +6079,7 @@ che: [
         cve: { name: 'CVE 105', timeMin: 10, icon: 'flask' },
         che: { name: 'CHE 101', timeMin: 10, icon: 'vial' },
         gns101: { name: 'GNS 101', timeMin: 10, icon: 'book' },
-        gns103: { name: 'GNS 103', timeMin: 10, icon: 'building-columns' },
+        gns103: { name: 'GNS 103', timeMin: 10, icon: 'book' },
         phy101: { name: 'PHY 101', timeMin: 10, icon: 'rocket' },
         phy103: { name: 'PHY 103', timeMin: 10, icon: 'droplet' },
         mts: { name: 'MTS 101', timeMin: 20, icon: 'square-root-variable' }
