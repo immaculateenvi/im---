@@ -34,11 +34,49 @@
             </span>
         </div>
 
-        <!-- ===== MODE TOGGLE ===== -->
-        <div class="mode-toggle" id="modeToggle">
-            <button id="modeCbtBtn" class="mode-btn active"><i class="fas fa-clock"></i> CBT · 20q</button>
-            <button id="modePracticeBtn" class="mode-btn"><i class="fas fa-feather"></i> Practice · all</button>
+<!-- ===== MODE TOGGLE ===== -->
+<div class="mode-toggle" id="modeToggle">
+    <button id="modeCbtBtn" class="mode-btn active"><i class="fas fa-clock"></i> CBT · 20q</button>
+    <button id="modePracticeBtn" class="mode-btn"><i class="fas fa-feather"></i> Practice · all</button>
+    <button id="modeCustomBtn" class="mode-btn"><i class="fas fa-sliders-h"></i> Custom</button>
+</div>
+
+<!-- ===== CUSTOM SESSION SETTINGS ===== -->
+<div id="customSettingsPanel" style="display: none; background: #fefcf7; border-radius: 40px; padding: 24px; margin: 20px 0; border: 1px solid #e6d5b8;">
+    <h3 style="display: flex; align-items: center; gap: 12px; margin-top: 0; margin-bottom: 20px;">
+        <i class="fas fa-cog"></i> Custom Session Settings
+    </h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end;">
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a3e2e;">
+                <i class="fas fa-question-circle"></i> Number of Questions
+            </label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="number" id="customQuestionCount" min="1" max="120" value="30" 
+                       style="width: 100px; padding: 12px; border-radius: 30px; border: 2px solid #e6d5b8; background: white; font-size: 1rem;">
+                <span style="color: #6f5e4e;">max: <span id="customQuestionMax">120</span></span>
+            </div>
         </div>
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a3e2e;">
+                <i class="fas fa-hourglass-half"></i> Time Limit (minutes)
+            </label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="number" id="customTimeMinutes" min="1" max="180" value="30" 
+                       style="width: 100px; padding: 12px; border-radius: 30px; border: 2px solid #e6d5b8; background: white; font-size: 1rem;">
+                <span style="color: #6f5e4e;">max: 180</span>
+            </div>
+        </div>
+        <div style="flex: 0 0 auto;">
+            <button id="applyCustomSettingsBtn" style="background: #c1d4c9; border: none; padding: 12px 32px; border-radius: 60px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-play"></i> Start Custom Session
+            </button>
+        </div>
+    </div>
+    <p style="margin-bottom: 0; margin-top: 16px; color: #6f5e4e; font-size: 0.9rem; border-top: 1px dashed #e6d5b8; padding-top: 16px;">
+        <i class="fas fa-info-circle"></i> Custom session: <strong><span id="customCountValue">30</span> questions</strong> · <strong><span id="customTimeValue">30</span> minutes</strong>
+    </p>
+</div>
 
         <!-- ===== QUIZ PANEL ===== -->
         <div class="quiz-pane" id="quizPane">
