@@ -565,3 +565,204 @@ i { margin-right: 6px; }
         opacity: 1;
     }
 }
+/* ========== ADDITIONAL RESPONSIVE RULES ========== */
+/* Ensure all images and media scale properly */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Prevent horizontal scroll on very small screens */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Responsive adjustments for tablets and phones */
+@media (max-width: 768px) {
+    /* Header: stack logo and actions */
+    .cbt-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 16px 20px;
+    }
+    
+    .logo-area {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .cbt-title {
+        font-size: 1.8rem;
+    }
+    
+    .full-name {
+        font-size: 0.9rem;
+    }
+    
+    /* Status bar stack */
+    div[style*="justify-content: space-between"] {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+    
+    /* Welcome panel text */
+    .welcome-panel h2 {
+        font-size: 1.5rem;
+    }
+    
+    .welcome-panel p {
+        font-size: 1rem;
+    }
+    
+    /* Subject cards: two per row on smaller tablets */
+    .subject-dashboard {
+        gap: 15px;
+    }
+    
+    .subject-card {
+        flex: 1 1 140px;
+        max-width: 45%;
+        padding: 18px 12px;
+    }
+    
+    .subject-name {
+        font-size: 1.2rem;
+    }
+    
+    .meta-info {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+    
+    /* Quiz pane */
+    .quiz-pane {
+        padding: 20px 18px;
+    }
+    
+    .question-box {
+        font-size: 1.2rem;
+        padding: 15px 18px;
+    }
+    
+    .option-item {
+        padding: 14px 18px;
+        font-size: 0.95rem;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .nav-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Correction pane */
+    .correction-pane {
+        padding: 20px 18px;
+    }
+    
+    .correction-title {
+        font-size: 1.5rem;
+    }
+    
+    /* Footer */
+    .footer-credit {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Phones: single column cards */
+    .subject-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    /* Adjust header fonts */
+    .cbt-title {
+        font-size: 1.5rem;
+    }
+    
+    .logo-image {
+        width: 60px;
+        height: 60px;
+    }
+    
+    /* Timer and progress */
+    .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    /* Mode toggle */
+    .mode-toggle {
+        flex-direction: column;
+        width: 100%;
+        border-radius: 40px;
+    }
+    
+    .mode-btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Custom settings panel */
+    #customSettingsPanel > div {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
+    #customSettingsPanel input[type="number"] {
+        width: 100% !important;
+    }
+    
+    /* Time selection panel */
+    #timeSelectionPanel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    #timeSelectionPanel > div {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* Results page */
+    .score-circle {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .score-number {
+        font-size: 2.8rem;
+    }
+    
+    .question-review {
+        padding: 18px;
+    }
+    
+    .question-review > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Ensure MathJax content doesn't overflow */
+.math, .MathJax {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* Improve tap targets on touch devices */
+button, .option-item, .subject-card, .back-link, .community-link {
+    touch-action: manipulation;
+}
