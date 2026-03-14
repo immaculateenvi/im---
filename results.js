@@ -1,20 +1,34 @@
-// ========== RESULTS.JS ==========
+// ========== RESULTS.JS - FIXED VERSION ==========
 // Detailed results page - shows full correction with explanations
 (function() {
     "use strict";
+
+    console.log('📊 Results page loading...');
+
+    // Get subject ID from URL if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlSubjectId = urlParams.get('id');
 
     // Load saved results from sessionStorage
     const resultsData = JSON.parse(sessionStorage.getItem('cbtResults') || 'null');
     
     if (!resultsData) {
+        // No results found - show error with option to return
         document.getElementById('resultsContainer').innerHTML = `
             <div style="text-align: center; padding: 80px 20px;">
                 <i class="fas fa-circle-exclamation fa-4x" style="color: #c49a6c;"></i>
                 <h2 style="margin: 30px 0; color: #5e4b3a;">no results found</h2>
                 <p>complete a CBT test first to see your performance report</p>
-                <a href="index.html" class="community-link" style="display: inline-block; margin-top: 30px;">
-                    <i class="fas fa-home"></i> return to courses
-                </a>
+                <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <a href="index.html" style="display: inline-block; padding: 16px 42px; background: #c1d4c9; border-radius: 60px; text-decoration: none; color: #2a5c4a; font-weight: 600;">
+                        <i class="fas fa-home"></i> return to courses
+                    </a>
+                    ${urlSubjectId ? `
+                        <a href="subject.html?id=${urlSubjectId}" style="display: inline-block; padding: 16px 42px; background: #e8dfd1; border-radius: 60px; text-decoration: none; color: #3a2e26; font-weight: 600;">
+                            <i class="fas fa-arrow-rotate-left"></i> retake test
+                        </a>
+                    ` : ''}
+                </div>
             </div>
         `;
         return;
@@ -38,7 +52,7 @@
         if (!isNaN(parseFloat(correctAns)) && isFinite(correctAns)) {
             let userNum = parseFloat(userStr);
             let correctNum = parseFloat(correctAns);
-            return userNum === correctNum;
+            return Math.abs(userNum - correctNum) < 0.0001;
         }
         
         return correctAns.toString().trim().toLowerCase() === userStr;
@@ -48,7 +62,6 @@
         if (q.type === 'mcq' || q.type === 'tf' || !q.type) {
             return `${String.fromCharCode(65 + q.ans)}. ${q.opts[q.ans]}`;
         } else {
-            // Date, name, numeric
             if (Array.isArray(q.ans)) {
                 return q.ans.join(' or ');
             }
@@ -92,7 +105,7 @@
         
         html += `<p style="margin-bottom: 20px;"><strong>📌 areas needing review:</strong></p>`;
         Object.entries(topicCounts).sort((a,b) => b[1] - a[1]).forEach(([topic, count]) => {
-            html += `<span class="topic-badge" style="background: #ffe6d5;">${topic} (${count} missed)</span>`;
+            html += `<span class="topic-badge" style="background: #ffe6d5; padding: 12px 28px; border-radius: 60px; display: inline-block; margin: 8px; font-weight: 600;">${topic} (${count} missed)</span>`;
         });
     } else {
         html += `<p style="color: #2e7d5e;"><i class="fas fa-star"></i> excellent! no weak topics identified</p>`;
@@ -109,10 +122,10 @@
         const statusClass = isCorrect ? 'correct-answer' : (userAns === -1 || userAns === '' ? '' : 'wrong-answer');
         const statusText = isCorrect ? 'correct' : (userAns === -1 || userAns === '' ? 'skipped' : 'incorrect');
         
-        html += `<div class="question-review">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        html += `<div class="question-review" style="background: #fffcf9; border-radius: 28px; padding: 24px; margin-bottom: 16px; border-left: 12px solid #d6c8b2;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                 <span style="font-size: 1.2rem; font-weight: 700;">Q${idx+1}. ${q.q}</span>
-                <span class="${statusClass}" style="padding: 8px 20px; border-radius: 40px;">${statusIcon} ${statusText}</span>
+                <span class="${statusClass}" style="padding: 8px 20px; border-radius: 40px; ${isCorrect ? 'background: #e2f0da; color: #2c5e2c;' : (userAns === -1 || userAns === '' ? '' : 'background: #ffe1dd; color: #9e3a2e;')}">${statusIcon} ${statusText}</span>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px;">
@@ -134,11 +147,11 @@
         </div>`;
     });
 
-    html += `<div style="text-align: center; margin-top: 50px;">
-        <a href="subject.html?id=${subjectId}" class="community-link" style="display: inline-block; padding: 16px 48px; text-decoration: none; background: #e8dfd1; border-radius: 60px; color: #3a2e26;">
+    html += `<div style="text-align: center; margin-top: 50px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+        <a href="subject.html?id=${subjectId}" style="display: inline-block; padding: 16px 48px; background: #e8dfd1; border-radius: 60px; text-decoration: none; color: #3a2e26; font-weight: 600;">
             <i class="fas fa-arrow-rotate-left"></i> retake ${subjectName}
         </a>
-        <a href="index.html" class="community-link" style="display: inline-block; padding: 16px 48px; margin-left: 20px; text-decoration: none; background: #d1c4b4; border-radius: 60px; color: #3a2e26;">
+        <a href="index.html" style="display: inline-block; padding: 16px 48px; background: #c1d4c9; border-radius: 60px; text-decoration: none; color: #2a5c4a; font-weight: 600;">
             <i class="fas fa-home"></i> dashboard
         </a>
     </div>`;

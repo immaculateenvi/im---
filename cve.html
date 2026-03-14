@@ -1,0 +1,140 @@
+<!-- ========== CVE.HTML ========== -->
+<!-- CVE 105 - Questions loaded from external cve.js -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <title id="subjectName">CVE 105 · Science and Technology</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <!-- MathJax for beautiful equations -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+    <!-- Subject-specific question bank -->
+    <script src="cve.js"></script>
+</head>
+<body class="subject-page">
+    <div class="main-wrapper">
+        <!-- ===== BACK TO DASHBOARD ===== -->
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> all courses</a>
+
+        <!-- ===== HEADER (compact) ===== -->
+        <header class="cbt-header" style="margin-bottom:20px;">
+            <div class="logo-area">
+                <img src="logo.jpg" alt="Envilinks Logo" class="logo-image" style="width:70px; height:70px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div>
+                    <div class="cbt-title" style="font-size:1.8rem;">IM+++ <span style="font-size:1.2rem;" id="subjectNameHeader">CVE 105</span></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== OFFLINE INDICATOR ===== -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <span style="background: #e6d5b8; padding: 4px 16px; border-radius: 60px; font-size: 0.8rem; color: #4a3e2e;">
+                <i class="fas fa-database"></i> cached offline
+            </span>
+        </div>
+
+        <!-- ===== MODE TOGGLE ===== -->
+        <div class="mode-toggle" id="modeToggle">
+            <button id="modeCbtBtn" class="mode-btn active"><i class="fas fa-clock"></i> CBT · 20q</button>
+            <button id="modePracticeBtn" class="mode-btn"><i class="fas fa-feather"></i> Practice · all</button>
+            <button id="modeCustomBtn" class="mode-btn"><i class="fas fa-sliders-h"></i> Custom</button>
+        </div>
+
+        <!-- ===== CUSTOM SESSION SETTINGS ===== -->
+        <div id="customSettingsPanel" style="display: none; background: #fefcf7; border-radius: 40px; padding: 24px; margin: 20px 0; border: 1px solid #e6d5b8;">
+            <h3 style="display: flex; align-items: center; gap: 12px; margin-top: 0; margin-bottom: 20px;">
+                <i class="fas fa-cog"></i> Custom Session Settings
+            </h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a3e2e;">
+                        <i class="fas fa-question-circle"></i> Number of Questions
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="number" id="customQuestionCount" min="1" max="125" value="30" 
+                               style="width: 100px; padding: 12px; border-radius: 30px; border: 2px solid #e6d5b8; background: white; font-size: 1rem;">
+                        <span style="color: #6f5e4e;">max: <span id="customQuestionMax">125</span></span>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a3e2e;">
+                        <i class="fas fa-hourglass-half"></i> Time Limit (minutes)
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="number" id="customTimeMinutes" min="1" max="180" value="30" 
+                               style="width: 100px; padding: 12px; border-radius: 30px; border: 2px solid #e6d5b8; background: white; font-size: 1rem;">
+                        <span style="color: #6f5e4e;">max: 180</span>
+                    </div>
+                </div>
+                <div style="flex: 0 0 auto;">
+                    <button id="applyCustomSettingsBtn" style="background: #c1d4c9; border: none; padding: 12px 32px; border-radius: 60px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-play"></i> Start Custom Session
+                    </button>
+                </div>
+            </div>
+            <p style="margin-bottom: 0; margin-top: 16px; color: #6f5e4e; font-size: 0.9rem; border-top: 1px dashed #e6d5b8; padding-top: 16px;">
+                <i class="fas fa-info-circle"></i> Custom session: <strong><span id="customCountValue">30</span> questions</strong> · <strong><span id="customTimeValue">30</span> minutes</strong>
+            </p>
+        </div>
+
+        <!-- ===== QUIZ PANEL ===== -->
+        <div class="quiz-pane" id="quizPane">
+            <div class="question-header">
+                <div class="progress" id="progressIndicator">✦ 0/0</div>
+                <div class="timer-badge" id="timerDisplay"><i class="fas fa-hourglass-half"></i> 00:00</div>
+                <button class="shuffle-btn" id="shuffleBtn"><i class="fas fa-random"></i> reshuffle</button>
+            </div>
+            <div id="questionContainer">
+                <div class="question-box" id="questionText">loading questions...</div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" disabled><i class="fas fa-arrow-left"></i> previous</button>
+                <button class="nav-btn" id="nextBtn">next <i class="fas fa-arrow-right"></i></button>
+                <button class="nav-btn submit-btn" id="submitSubjectBtn"><i class="fas fa-check-circle"></i> finish & submit</button>
+                <button class="nav-btn explain-btn" id="explainCurrentBtn"><i class="fas fa-lightbulb"></i> explain</button>
+            </div>
+        </div>
+
+        <!-- ===== CORRECTION PANE ===== -->
+        <div class="correction-pane" id="correctionPane">
+            <div class="correction-title">
+                <i class="fas fa-clipboard-check"></i> review & topics
+            </div>
+            <div id="correctionContent">
+                <p style="font-size:1.2rem; color:#685a4a; text-align:center;">
+                    <i class="fas fa-lock"></i> Complete the test and submit to see your results
+                </p>
+            </div>
+            <!-- Hidden until submission -->
+            <div class="topic-suggestion hidden" id="topicSuggestionBox">
+                <i class="fas fa-book-open"></i> <strong>📘 focus topics for review:</strong> 
+                <span id="suggestedTopics">—</span>
+            </div>
+        </div>
+
+        <!-- ===== VIEW FULL RESULTS LINK ===== -->
+        <div style="text-align: center; margin: 20px 0;" id="viewResultsContainer" class="hidden">
+            <a href="#" id="viewFullResultsBtn" class="community-link" style="display: inline-flex; background: #c1d4c9; padding: 16px 42px;">
+                <i class="fas fa-chart-simple"></i> view detailed performance report
+            </a>
+        </div>
+
+        <!-- ===== COPYRIGHT ===== -->
+        <footer class="copyright">
+            <div class="footer-credit">
+                <span><i class="fas fa-copyright"></i> Designed by <a href="https://eimc.vercel.app/"> Envilinks Interconnectivity Media Concept</a></span>
+                <span><i class="fas fa-bolt"></i><a href="https://chat.whatsapp.com/KnEMW7zYJr1K8Be0naLIYa" target="_blank" class="community-link">
+                <i class="fab fa-whatsapp"></i> Join the Immaculate Envilinks + FUTA community
+            </a></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Shared subject JavaScript -->
+    <script src="subject.js"></script>
+</body>
+</html>

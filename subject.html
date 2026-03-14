@@ -1,4 +1,4 @@
-<!-- ========== SUBJECT.HTML ========== -->
+<!-- ===== SUBJECT.HTML - UPDATED VERSION ===== -->
 <!-- Individual subject test page - fully offline capable -->
 <!DOCTYPE html>
 <html lang="en">
@@ -132,7 +132,62 @@
         </footer>
     </div>
 
-    <!-- subject JavaScript -->
+    <!-- FIRST: Load the specific subject JS file based on URL parameter -->
+    <script>
+        (function() {
+            // Get subject ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const subjectId = urlParams.get('id');
+            
+            if (subjectId) {
+                console.log('📚 Loading subject JS file for:', subjectId);
+                
+                // Create a global variable to track loading
+                window._subjectLoading = {
+                    id: subjectId,
+                    loaded: false
+                };
+                
+                // Create script element to load the subject's JS file
+                const script = document.createElement('script');
+                script.src = subjectId + '.js';
+                script.async = false; // Load synchronously
+                
+                script.onload = function() {
+                    console.log('✅ Successfully loaded:', subjectId + '.js');
+                    window._subjectLoading.loaded = true;
+                    
+                    // Check if question bank exists
+                    if (window.questionBank && window.questionBank[subjectId]) {
+                        console.log(`✅ Question bank available for ${subjectId} with ${window.questionBank[subjectId].length} questions`);
+                    } else {
+                        console.error(`❌ Question bank NOT found for ${subjectId} after loading JS`);
+                        console.log('window.questionBank keys:', window.questionBank ? Object.keys(window.questionBank) : 'undefined');
+                    }
+                };
+                
+                script.onerror = function() {
+                    console.error('❌ Failed to load:', subjectId + '.js');
+                    document.body.innerHTML = `
+                        <div style="padding:50px; text-align:center;">
+                            <h2 style="color:#c44;">❌ Failed to load questions for ${subjectId}</h2>
+                            <p>Could not find file: <strong>${subjectId}.js</strong></p>
+                            <p>Please check that the file exists in the same directory.</p>
+                            <a href="index.html" style="display:inline-block; margin-top:20px; padding:12px 30px; background:#efebe2; border-radius:40px; text-decoration:none;">
+                                ← back to courses
+                            </a>
+                        </div>
+                    `;
+                };
+                
+                document.head.appendChild(script);
+            } else {
+                console.error('❌ No subject ID in URL');
+            }
+        })();
+    </script>
+
+    <!-- THEN: Load subject.js which will use the loaded question bank -->
     <script src="subject.js"></script>
 </body>
 </html>
